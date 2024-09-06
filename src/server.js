@@ -20,7 +20,7 @@ export const setupServer = () => {
         ),
     );
 
-    app.get('/', (req, res) => {
+    app.get('/contacts', (req, res) => {
         res.json({
             message: 'Hello world'
         });
