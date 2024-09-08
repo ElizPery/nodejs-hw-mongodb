@@ -3,6 +3,7 @@ import pino from 'pino-http';
 import cors from 'cors';
 import contactsRouter from './routers/contacts.js';
 import { env } from './utils/env.js';
+import { HttpError } from 'http-errors';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -30,7 +31,16 @@ export const setupServer = () => {
     });
 
     app.use((err, req, res, next) => {
+        if (err instanceof HttpError) {
+            res.status(err.status).json({
+                status: err.status,
+                message: err.name,
+                data: err,
+            });
+        };
+
         res.status(500).json({
+            status: 500,
             message: 'Something went wrong',
             error: err.message,
         });
