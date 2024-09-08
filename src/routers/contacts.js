@@ -5,8 +5,14 @@ import ctrlWrapper from "../utils/ctrlWrapper.js";
 
 const contactsRouter = Router();
 
-    contactsRouter.get('/', ctrlWrapper(contactsControllers.getAllContactsController));
+contactsRouter.get('/', ctrlWrapper(contactsControllers.getAllContactsController));
 
-    contactsRouter.get('/:contactId', ctrlWrapper(contactsControllers.getContactByIdController));
+contactsRouter.get('/:contactId', ctrlWrapper(contactsControllers.getContactByIdController));
+
+contactsRouter.post('/', ctrlWrapper(contactsControllers.addContactController));
+    
+contactsRouter.patch('/:contactId', ctrlWrapper(contactsControllers.patchContactController));
+
+contactsRouter.delete('/:contactId', ctrlWrapper(contactsControllers.deleteContactController));
 
 export default contactsRouter;
