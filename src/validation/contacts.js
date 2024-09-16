@@ -27,3 +27,27 @@ name: Joi.string().min(3).max(20).required().messages({
         'any.required': 'ContactType is required',
     })
 });
+
+export const patchContactsSchema = Joi.object({
+    name: Joi.string().min(3).max(20).messages({
+        'string.base': 'Name should be a string',
+        'string.min': 'Name should have at least {#limit} characters',
+        'string.max': 'Name should have at most {#limit} characters',
+    }),
+    phoneNumber: Joi.string().min(3).max(20).messages({
+        'string.base': 'Phone number should be a string',
+        'string.min': 'Phone number should have at least {#limit} characters',
+        'string.max': 'Phone number should have at most {#limit} characters',
+    }),
+    email: Joi.string().min(3).max(20).email().messages({
+        'string.base': 'Email should be a string',
+        'string.min': 'Email should have at least {#limit} characters',
+        'string.max': 'Email should have at most {#limit} characters',
+    }),
+    isFavourite: Joi.boolean().messages({
+        'boolean.base': 'IsFavourite should be a boolean',
+    }),
+    contactType: Joi.string().valid(...contactTypeList).messages({
+        'string.base': 'ContactType should be a string',
+    })
+});
