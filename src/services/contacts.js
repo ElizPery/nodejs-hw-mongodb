@@ -16,12 +16,13 @@ export const getContacts = async ({
     if (filter.type) {
         contactsQuery.where('contactType').equals(filter.type);
     }
-    if (filter.isFavourite !== undefined || filter.isFavourite !== null) {
+ 
+    if (filter.isFavourite !== undefined && filter.isFavourite !== null) {
         contactsQuery.where('isFavourite').equals(filter.isFavourite);
     }
 
-    const data = await contactsQuery.find().skip(skipCount).limit(perPage).sort({[sortBy]: sortOrder});
     const count = await ContactsCollection.find().merge(contactsQuery).countDocuments();
+    const data = await contactsQuery.skip(skipCount).limit(perPage).sort({[sortBy]: sortOrder}).exec();
 
     const paginationData = calculatePaginationData({ count, page, perPage });
 
