@@ -1,10 +1,15 @@
+import jwt from 'jsonwebtoken';
+
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 
-import createHttpError from "http-errors";
-import { UsersCollection } from "../db/models/User.js";
+import createHttpError from 'http-errors';
+import { UsersCollection } from '../db/models/User.js';
 import { accessTokenLifeTime, refreshTokenLifeTime } from '../constants/users.js';
 import { SessionCollection } from '../db/models/Session.js';
+import { env } from '../utils/env.js';
+import { sendEmail } from '../utils/sendMail.js';
+import { SMTP } from '../constants/index.js';
 
 const createSession = () => {
     const accessToken = randomBytes(30).toString('base64');
@@ -89,4 +94,30 @@ export const refreshSession = async ({ refreshToken, sessionId }) => {
 
 export const logout = async (sessionId) => {
     await SessionCollection.deleteOne({ _id: sessionId });
+};
+
+export const requestResetToken = async (email) => {
+    const user = await UsersCollection.findOne({ email });
+
+    if (!user) {
+        throw createHttpError(404, 'User not found');
+    }
+
+    const resetToken = jwt.sign(
+        {
+            sub: user._id,
+            email
+        },
+        env('JWT_SECRET'),
+        {
+            expiresIn: '5m',
+        },
+    );
+
+    await sendEmail({
+        from: env(SMTP.SMTP_FROM),
+        to: email,
+        subject: 'Reset your password',
+        html: `<p>Click <a href="https://${env('APP_DOMAIN')}/reset-password?token=${resetToken}">here</a> to reset your password!</p>`,
+    });
 };
