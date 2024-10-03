@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { contactTypeList } from '../constants/contacts.js';
 
 export const createContactsSchema = Joi.object({
-name: Joi.string().min(3).max(20).required().messages({
+    name: Joi.string().min(3).max(20).required().messages({
         'string.base': 'Name should be a string',
         'string.min': 'Name should have at least {#limit} characters',
         'string.max': 'Name should have at most {#limit} characters',
@@ -22,6 +22,7 @@ name: Joi.string().min(3).max(20).required().messages({
     isFavourite: Joi.boolean().messages({
         'boolean.base': 'IsFavourite should be a boolean',
     }),
+    photo: Joi.string(),
     contactType: Joi.string().valid(...contactTypeList).required().messages({
         'string.base': 'ContactType should be a string',
         'any.required': 'ContactType is required',
