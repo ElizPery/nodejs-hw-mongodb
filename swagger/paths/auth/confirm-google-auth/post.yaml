@@ -1,0 +1,61 @@
+tags:
+  - Auth
+summary: Confirm google auth
+operationId: googleAuthUser
+description: 'Confirm google auth'
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+            - code
+        properties:
+          code:
+            description: "Code that is sended by Google Oauth after user confirmation"
+            type: string
+            example: "lfkwHKkjhlIUGH928blgukjgliglkujbHGDS66jkB"
+responses:
+  '200':
+    description: "Successfully login a user by Google OAuth!"
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully login by Google OAuth!"
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  example: "HJeyebgvKdVUfC5Z"
+  '401':
+    description: "Unauthorized user"
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: "Unauthorized"
