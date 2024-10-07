@@ -1,0 +1,83 @@
+tags:
+  - Contacts
+summary: Patch contact
+operationId: patchContact
+description: "Patch a contact"
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: "65ca67e7ae7f10c88b598384"
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          name:
+            description: "Contact's name"
+            type: string
+            example: "John Doe"
+          phoneNumber:
+            description: "Contact's phone number"
+            type: string
+            example: "+3800990505683"
+          contactType:
+            description: "Contact's type"
+            type: string
+            enum: ["work", "home", "personal"]
+          email:
+            description: "Contact's email"
+            type: string
+            example: "johndoe@gmail.com"
+          isFavourite:
+            description: "Whether is this contact favourite"
+            type: boolean
+            example: true
+          photo:
+            description: "Link to contact's photo"
+            type: string
+            format: binary
+responses:
+  '200':
+    description: "Patched a contact"
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully patched a contact!"
+            data:
+              type: object
+              $ref: '../../../components/schemas/contact.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    description: "Not found contact by id"
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: "Contact with id 65ca67e7ae7f10c88b598384 not found"

@@ -48,6 +48,7 @@ export const patchContactsSchema = Joi.object({
     isFavourite: Joi.boolean().messages({
         'boolean.base': 'IsFavourite should be a boolean',
     }),
+    photo: Joi.string(),
     contactType: Joi.string().valid(...contactTypeList).messages({
         'string.base': 'ContactType should be a string',
     })
