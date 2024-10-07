@@ -8,6 +8,7 @@ import * as authControllers from "../controllers/auth.js";
 const authRouter = Router();
 
 authRouter.post('/register', validateBody(validationUserSchemas.userRegistrationSchema), ctrlWrapper(authControllers.registerController));
+authRouter.get('/get-google-oauth-url', ctrlWrapper(authControllers.getGoogleOAuthUrlController));
 authRouter.post('/login', validateBody(validationUserSchemas.userLoginSchema), ctrlWrapper(authControllers.loginController));
 authRouter.post('/refresh', ctrlWrapper(authControllers.refreshController));
 authRouter.post('/logout', ctrlWrapper(authControllers.logoutController));
