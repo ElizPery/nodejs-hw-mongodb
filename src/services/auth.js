@@ -13,6 +13,7 @@ import { sendEmail } from '../utils/sendMail.js';
 import { SMTP, TEMPLATES_DIR } from '../constants/index.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { validateCode } from '../utils/googleOAuth2.js';
 
 const createSession = () => {
     const accessToken = randomBytes(30).toString('base64');
@@ -157,4 +158,33 @@ export const resetPassword = async (password, token) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await UsersCollection.findOneAndUpdate({ _id: user._id }, { password: hashedPassword },);
+};
+
+export const loginOrSignupWithGoogle = async (code) => {
+    const loginTicket = await validateCode(code);
+    const payload = loginTicket.getPayload();
+    if (!payload) throw createHttpError(401);
+
+    let user = await UsersCollection.findOne({ email: payload.email });
+
+    if (!user) {
+        const password = randomBytes(10);
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user = await UsersCollection.create({
+            email: payload.email,
+            name: payload.name,
+            password: hashedPassword,
+        });
+        delete user._doc.password;
+    };
+    
+    const sessionData = createSession();
+
+    const userSession = await SessionCollection.create({
+        userId: user._id,
+        ...sessionData,
+    });
+    
+    return userSession;
 };
